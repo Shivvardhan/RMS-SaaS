@@ -1,6 +1,7 @@
 
 import { useDrop } from 'react-dnd';
-import { useLayoutStore, LayoutItem, Product } from '@/store/layoutStore';
+import { useLayoutStore, LayoutItem } from '@/store/layoutStore';
+import { useToast } from "@/hooks/use-toast";
 
 interface GridCellProps {
   x: number;
@@ -11,6 +12,7 @@ interface GridCellProps {
 const GridCell = ({ x, y, item }: GridCellProps) => {
   const { addItem, updateItem, assignProductToShelf } = useLayoutStore();
   const cellSize = useLayoutStore((state) => state.cellSize);
+  const { toast } = useToast();
 
   console.log(`Rendering GridCell at (${x},${y})`, item);
 
@@ -24,6 +26,10 @@ const GridCell = ({ x, y, item }: GridCellProps) => {
         if (droppedItem.type === 'product' && droppedItem.product && item?.id && item.type === 'shelf') {
           console.log('Assigning product to shelf:', droppedItem.product.id, 'to shelf:', item.id);
           assignProductToShelf(droppedItem.product.id, item.id);
+          toast({
+            title: "Product added",
+            description: `${droppedItem.product.name} added to shelf`
+          });
           return { x, y, target: 'shelf' };
         } 
         // Handle dropping an item (shelf/aisle) that's already placed (has an ID)
@@ -60,7 +66,7 @@ const GridCell = ({ x, y, item }: GridCellProps) => {
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
-    }), [x, y, item]);
+    }), [x, y, item, assignProductToShelf]);
 
     return (
       <div

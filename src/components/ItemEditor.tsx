@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLayoutStore, LayoutItem, ShelfType } from '@/store/layoutStore';
+import { useToast } from "@/hooks/use-toast";
 
 interface ItemEditorProps {
   item: LayoutItem;
@@ -13,8 +14,9 @@ interface ItemEditorProps {
 
 const ItemEditor = ({ item }: ItemEditorProps) => {
   const { updateItem, removeItem } = useLayoutStore();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const [editedItem, setEditedItem] = useState<LayoutItem>(item);
+  const [editedItem, setEditedItem] = useState<LayoutItem>({...item});
 
   const handleSave = () => {
     updateItem(item.id, {
@@ -22,11 +24,19 @@ const ItemEditor = ({ item }: ItemEditorProps) => {
       width: editedItem.width,
       height: editedItem.height
     });
+    toast({
+      title: "Item updated",
+      description: `${item.type} has been updated`
+    });
     setOpen(false);
   };
 
   const handleRemove = () => {
     removeItem(item.id);
+    toast({
+      title: "Item removed",
+      description: `${item.type} has been removed from the layout`
+    });
     setOpen(false);
   };
 
@@ -83,6 +93,15 @@ const ItemEditor = ({ item }: ItemEditorProps) => {
                   <SelectItem value="island">Island</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+          )}
+
+          {item.type === 'shelf' && item.products && item.products.length > 0 && (
+            <div>
+              <Label>Products on this shelf: {item.products.length}</Label>
+              <div className="text-xs text-gray-500 italic">
+                (Drag products to add, click on products to remove)
+              </div>
             </div>
           )}
         </div>

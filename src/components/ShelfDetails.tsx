@@ -1,6 +1,7 @@
 
 import { LayoutItem } from '@/store/layoutStore';
 import { useLayoutStore } from '@/store/layoutStore';
+import { useToast } from "@/hooks/use-toast";
 
 interface ShelfDetailsProps {
   item: LayoutItem;
@@ -9,14 +10,20 @@ interface ShelfDetailsProps {
 
 const ShelfDetails = ({ item, cellSize }: ShelfDetailsProps) => {
   const { removeProductFromShelf } = useLayoutStore();
+  const { toast } = useToast();
 
   // Guard clause to ensure item.products exists
   if (!item.products || !Array.isArray(item.products)) {
+    console.log("No products on this shelf or invalid products array");
     return null;
   }
 
-  const handleRemoveProduct = (productId: string) => {
+  const handleRemoveProduct = (productId: string, productName: string) => {
     removeProductFromShelf(productId, item.id);
+    toast({
+      title: "Product removed",
+      description: `${productName} removed from shelf`
+    });
   };
 
   // Calculate how many products can fit in the shelf
@@ -35,9 +42,9 @@ const ShelfDetails = ({ item, cellSize }: ShelfDetailsProps) => {
       {item.products.slice(0, maxProducts).map((product, index) => (
         <div 
           key={`${item.id}-product-${product.id}`}
-          className={`bg-white rounded-sm flex flex-col justify-center items-center overflow-hidden text-[8px] cursor-pointer border border-gray-300`}
-          onClick={() => handleRemoveProduct(product.id)}
-          title={`${product.name} - $${product.price}`}
+          className={`bg-white rounded-sm flex flex-col justify-center items-center overflow-hidden text-[8px] cursor-pointer border border-gray-300 hover:bg-gray-100`}
+          onClick={() => handleRemoveProduct(product.id, product.name)}
+          title={`${product.name} - $${product.price} (Click to remove)`}
         >
           <div 
             className={`w-full h-1 mb-[2px]`}

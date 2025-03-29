@@ -6,10 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from "@/hooks/use-toast";
 import DraggableItem from './DraggableItem';
 
 const ProductManager = () => {
   const { products, addProduct, removeProduct } = useLayoutStore();
+  const { toast } = useToast();
   const [newProduct, setNewProduct] = useState<Omit<Product, 'id'>>({
     name: '',
     category: 'food',
@@ -18,13 +20,34 @@ const ProductManager = () => {
   });
 
   const handleAddProduct = () => {
-    if (newProduct.name.trim() === '') return;
+    if (newProduct.name.trim() === '') {
+      toast({
+        title: "Error",
+        description: "Product name cannot be empty",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     addProduct(newProduct);
+    toast({
+      title: "Product added",
+      description: `${newProduct.name} added to inventory`
+    });
+    
     setNewProduct({
       name: '',
       category: 'food',
       price: 0,
       stock: 0,
+    });
+  };
+
+  const handleRemoveProduct = (id: string, name: string) => {
+    removeProduct(id);
+    toast({
+      title: "Product removed",
+      description: `${name} removed from inventory`
     });
   };
 
@@ -93,7 +116,7 @@ const ProductManager = () => {
         </div>
         
         <div className="mt-4">
-          <h3 className="text-sm font-medium mb-2">Available Products:</h3>
+          <h3 className="text-sm font-medium mb-2">Available Products (Drag to Shelves):</h3>
           <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2">
             {products.map((product) => (
               <div key={product.id} className="flex items-center space-x-2">
@@ -110,12 +133,17 @@ const ProductManager = () => {
                   variant="ghost" 
                   size="sm"
                   className="h-6 w-6 p-0"
-                  onClick={() => removeProduct(product.id)}
+                  onClick={() => handleRemoveProduct(product.id, product.name)}
                 >
                   ×
                 </Button>
               </div>
             ))}
+            {products.length === 0 && (
+              <div className="text-gray-500 text-xs italic text-center py-2">
+                No products available. Add some products above.
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
