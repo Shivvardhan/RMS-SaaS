@@ -1,9 +1,10 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ProductCategory } from '@/store/layoutStore';
 
 const ZoneManager = () => {
-  const categories = [
+  const categories: {id: ProductCategory, name: string}[] = [
     { id: 'food', name: 'Food' },
     { id: 'beverage', name: 'Beverage' },
     { id: 'electronics', name: 'Electronics' },
