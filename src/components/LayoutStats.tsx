@@ -1,20 +1,27 @@
 
 import React from 'react';
-import { useLayoutStore } from '@/store/layoutStore';
+import { useLayoutStore, ProductCategory } from '@/store/layoutStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const LayoutStats = () => {
-  const { items } = useLayoutStore();
+  const { items, products } = useLayoutStore();
   
   const shelves = items.filter(item => item.type === 'shelf');
   const aisles = items.filter(item => item.type === 'aisle');
   
-  const zoneCount = items.reduce((acc, item) => {
-    if (item.zone) {
-      acc[item.zone] = (acc[item.zone] || 0) + 1;
-    }
+  // Count products by category
+  const productsByCategory = products.reduce((acc, product) => {
+    acc[product.category] = (acc[product.category] || 0) + 1;
     return acc;
-  }, {} as Record<string, number>);
+  }, {} as Record<ProductCategory, number>);
+
+  // Count total products placed on shelves
+  const placedProductsCount = items.reduce((count, item) => {
+    if (item.products && Array.isArray(item.products)) {
+      count += item.products.length;
+    }
+    return count;
+  }, 0);
 
   return (
     <Card className="bg-white">
@@ -32,10 +39,16 @@ const LayoutStats = () => {
           <div>Aisles:</div>
           <div className="font-medium">{aisles.length}</div>
           
-          <div className="col-span-2 mt-2 font-medium">Zone Distribution:</div>
-          {Object.entries(zoneCount).map(([zone, count]) => (
-            <React.Fragment key={zone}>
-              <div className="capitalize">{zone}:</div>
+          <div>Products:</div>
+          <div className="font-medium">{products.length}</div>
+          
+          <div>Placed Products:</div>
+          <div className="font-medium">{placedProductsCount}</div>
+          
+          <div className="col-span-2 mt-2 font-medium">Product Categories:</div>
+          {Object.entries(productsByCategory).map(([category, count]) => (
+            <React.Fragment key={category}>
+              <div className="capitalize">{category}:</div>
               <div className="font-medium">{count}</div>
             </React.Fragment>
           ))}

@@ -22,12 +22,20 @@ const DraggableItem = ({
   height,
   isPlaced = false,
 }: DraggableItemProps) => {
-  console.log('Rendering DraggableItem:', { id, type });
+  console.log('Rendering DraggableItem:', { id, type, product });
   
   try {
     const [{ isDragging }, drag] = useDrag(() => ({
       type: 'LAYOUT_ITEM',
-      item: { id, type, shelfType, product, width, height },
+      item: { 
+        id, 
+        type, 
+        shelfType, 
+        width, 
+        height,
+        // If it's a product, include the product data
+        ...(type === 'product' && product ? { product } : {})
+      },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),

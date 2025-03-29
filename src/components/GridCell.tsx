@@ -12,7 +12,7 @@ const GridCell = ({ x, y, item }: GridCellProps) => {
   const { addItem, updateItem, assignProductToShelf } = useLayoutStore();
   const cellSize = useLayoutStore((state) => state.cellSize);
 
-  console.log(`Rendering GridCell at (${x},${y})`);
+  console.log(`Rendering GridCell at (${x},${y})`, item);
 
   try {
     const [{ isOver, canDrop }, drop] = useDrop(() => ({
@@ -20,14 +20,21 @@ const GridCell = ({ x, y, item }: GridCellProps) => {
       drop: (droppedItem: any) => {
         console.log('Item dropped:', droppedItem, 'at position:', { x, y });
         
-        if (droppedItem.type === 'product' && item?.id) {
-          // If it's a product being dropped on a shelf
-          assignProductToShelf(droppedItem.id, item.id);
-        } else if (droppedItem.id && droppedItem.type !== 'product') {
-          // If item has ID, it's being moved (and it's not a product)
+        // Handle dropping a product onto a shelf
+        if (droppedItem.type === 'product' && droppedItem.product && item?.id && item.type === 'shelf') {
+          console.log('Assigning product to shelf:', droppedItem.product.id, 'to shelf:', item.id);
+          assignProductToShelf(droppedItem.product.id, item.id);
+          return { x, y, target: 'shelf' };
+        } 
+        // Handle dropping an item (shelf/aisle) that's already placed (has an ID)
+        else if (droppedItem.id && droppedItem.type !== 'product') {
+          console.log('Moving existing item:', droppedItem.id, 'to:', { x, y });
           updateItem(droppedItem.id, { x, y });
-        } else if (droppedItem.type !== 'product') {
-          // If it doesn't have ID, it's new (and it's not a product)
+          return { x, y, target: 'grid' };
+        } 
+        // Handle dropping a new item (doesn't have an ID)
+        else if (droppedItem.type !== 'product') {
+          console.log('Adding new item at:', { x, y });
           addItem({ 
             type: droppedItem.type, 
             shelfType: droppedItem.shelfType, 
@@ -36,14 +43,24 @@ const GridCell = ({ x, y, item }: GridCellProps) => {
             width: droppedItem.width, 
             height: droppedItem.height 
           });
+          return { x, y, target: 'grid' };
         }
-        return { x, y };
+        
+        return { x, y, target: 'unknown' };
+      },
+      canDrop: (droppedItem: any) => {
+        // Allow dropping products only on shelves
+        if (droppedItem.type === 'product') {
+          return item?.type === 'shelf';
+        }
+        // For other items, check if the cell is empty
+        return !item;
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
-    }));
+    }), [x, y, item]);
 
     return (
       <div
@@ -52,6 +69,7 @@ const GridCell = ({ x, y, item }: GridCellProps) => {
           border border-gray-200 
           ${isOver && canDrop ? 'bg-blue-100' : 'bg-transparent'}
           ${isOver && !canDrop ? 'bg-red-100' : ''}
+          ${item?.type === 'shelf' ? 'cursor-pointer' : ''}
         `}
         style={{
           width: `${cellSize}px`,
