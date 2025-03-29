@@ -8,7 +8,14 @@ interface DndProviderProps {
 }
 
 const DndProvider = ({ children }: DndProviderProps) => {
-  return <ReactDndProvider backend={HTML5Backend}>{children}</ReactDndProvider>;
+  // Using console.log to verify the provider is being rendered
+  console.log('DndProvider rendering with HTML5Backend');
+  
+  return (
+    <ReactDndProvider backend={HTML5Backend}>
+      {children}
+    </ReactDndProvider>
+  );
 };
 
 export default DndProvider;
