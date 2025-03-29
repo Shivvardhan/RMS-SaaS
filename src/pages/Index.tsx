@@ -1,13 +1,50 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from 'react';
+import DndProvider from '@/components/DndProvider';
+import Header from '@/components/Header';
+import GridLayout from '@/components/GridLayout';
+import Toolbar from '@/components/Toolbar';
+import LayoutSettings from '@/components/LayoutSettings';
+import ZoneManager from '@/components/ZoneManager';
+import LayoutStats from '@/components/LayoutStats';
+import HelpDialog from '@/components/HelpDialog';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <DndProvider>
+      <div className="min-h-screen bg-slate-100">
+        <Header />
+        
+        <main className="container mx-auto px-4 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Left Sidebar */}
+            <div className="lg:col-span-1 space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold">Toolbar</h2>
+                <HelpDialog />
+              </div>
+              <Toolbar />
+              <ZoneManager />
+              <LayoutStats />
+            </div>
+            
+            {/* Main Grid Area */}
+            <div className="lg:col-span-2 space-y-6">
+              <h2 className="text-xl font-bold">Layout Grid</h2>
+              <div className="bg-white p-4 rounded-lg shadow-sm min-h-[600px] overflow-auto">
+                <GridLayout />
+              </div>
+            </div>
+            
+            {/* Right Sidebar */}
+            <div className="lg:col-span-1 space-y-6">
+              <h2 className="text-xl font-bold">Settings</h2>
+              <LayoutSettings />
+            </div>
+          </div>
+        </main>
       </div>
-    </div>
+    </DndProvider>
   );
 };
 
