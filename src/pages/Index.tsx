@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import GridLayout from '@/components/GridLayout';
 import Toolbar from '@/components/Toolbar';
 import LayoutSettings from '@/components/LayoutSettings';
-import ZoneManager from '@/components/ZoneManager';
+import ProductManager from '@/components/ProductManager';
 import LayoutStats from '@/components/LayoutStats';
 import HelpDialog from '@/components/HelpDialog';
 
@@ -24,13 +24,13 @@ const Index = () => {
                 <HelpDialog />
               </div>
               <Toolbar />
-              <ZoneManager />
+              <ProductManager />
               <LayoutStats />
             </div>
             
             {/* Main Grid Area */}
             <div className="lg:col-span-2 space-y-6">
-              <h2 className="text-xl font-bold">Layout Grid</h2>
+              <h2 className="text-xl font-bold">Store Layout</h2>
               <div className="bg-white p-4 rounded-lg shadow-sm min-h-[600px] overflow-auto">
                 <GridLayout />
               </div>

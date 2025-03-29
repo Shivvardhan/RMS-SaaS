@@ -2,6 +2,7 @@
 import { useLayoutStore, LayoutItem } from '@/store/layoutStore';
 import GridCell from './GridCell';
 import DraggableItem from './DraggableItem';
+import ShelfDetails from './ShelfDetails';
 
 const GridLayout = () => {
   const { gridSize, cellSize, items } = useLayoutStore();
@@ -39,9 +40,10 @@ const GridLayout = () => {
       >
         {/* Render grid cells */}
         {grid.flatMap((row, y) =>
-          row.map((cellItemId, x) => (
-            <GridCell key={`cell-${x}-${y}`} x={x} y={y} />
-          ))
+          row.map((cellItemId, x) => {
+            const item = items.find(i => i.id === cellItemId);
+            return <GridCell key={`cell-${x}-${y}`} x={x} y={y} item={item} />;
+          })
         )}
       </div>
 
@@ -60,11 +62,15 @@ const GridLayout = () => {
               id={item.id}
               type={item.type}
               shelfType={item.shelfType}
-              zone={item.zone}
               width={item.width}
               height={item.height}
               isPlaced={true}
             />
+            
+            {/* Show products on shelves */}
+            {item.type === 'shelf' && item.products.length > 0 && (
+              <ShelfDetails item={item} cellSize={cellSize} />
+            )}
           </div>
         ))}
       </div>

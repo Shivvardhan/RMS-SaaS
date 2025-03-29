@@ -1,6 +1,6 @@
 
 import { useDrop } from 'react-dnd';
-import { useLayoutStore, LayoutItem } from '@/store/layoutStore';
+import { useLayoutStore, LayoutItem, Product } from '@/store/layoutStore';
 
 interface GridCellProps {
   x: number;
@@ -9,7 +9,7 @@ interface GridCellProps {
 }
 
 const GridCell = ({ x, y, item }: GridCellProps) => {
-  const { addItem, updateItem } = useLayoutStore();
+  const { addItem, updateItem, assignProductToShelf } = useLayoutStore();
   const cellSize = useLayoutStore((state) => state.cellSize);
 
   console.log(`Rendering GridCell at (${x},${y})`);
@@ -17,14 +17,25 @@ const GridCell = ({ x, y, item }: GridCellProps) => {
   try {
     const [{ isOver, canDrop }, drop] = useDrop(() => ({
       accept: 'LAYOUT_ITEM',
-      drop: (droppedItem: Omit<LayoutItem, 'id'> & { id?: string }) => {
+      drop: (droppedItem: any) => {
         console.log('Item dropped:', droppedItem, 'at position:', { x, y });
-        if (droppedItem.id) {
-          // If item has ID, it's being moved
+        
+        if (droppedItem.type === 'product' && item?.id) {
+          // If it's a product being dropped on a shelf
+          assignProductToShelf(droppedItem.id, item.id);
+        } else if (droppedItem.id && droppedItem.type !== 'product') {
+          // If item has ID, it's being moved (and it's not a product)
           updateItem(droppedItem.id, { x, y });
-        } else {
-          // If it doesn't have ID, it's new
-          addItem({ ...droppedItem, x, y });
+        } else if (droppedItem.type !== 'product') {
+          // If it doesn't have ID, it's new (and it's not a product)
+          addItem({ 
+            type: droppedItem.type, 
+            shelfType: droppedItem.shelfType, 
+            x, 
+            y, 
+            width: droppedItem.width, 
+            height: droppedItem.height 
+          });
         }
         return { x, y };
       },
