@@ -67,8 +67,8 @@ const GridLayout = () => {
               isPlaced={true}
             />
             
-            {/* Show products on shelves */}
-            {item.type === 'shelf' && item.products.length > 0 && (
+            {/* Show products on shelves - Add null check for item.products */}
+            {item.type === 'shelf' && item.products && item.products.length > 0 && (
               <ShelfDetails item={item} cellSize={cellSize} />
             )}
           </div>

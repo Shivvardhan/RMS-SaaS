@@ -1,6 +1,6 @@
 
 import { useDrag } from 'react-dnd';
-import { LayoutItem, ShelfType, Product } from '@/store/layoutStore';
+import { LayoutItem, ShelfType, Product, ProductCategory } from '@/store/layoutStore';
 
 interface DraggableItemProps {
   id?: string;

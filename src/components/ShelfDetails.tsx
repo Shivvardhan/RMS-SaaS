@@ -10,6 +10,11 @@ interface ShelfDetailsProps {
 const ShelfDetails = ({ item, cellSize }: ShelfDetailsProps) => {
   const { removeProductFromShelf } = useLayoutStore();
 
+  // Guard clause to ensure item.products exists
+  if (!item.products || !Array.isArray(item.products)) {
+    return null;
+  }
+
   const handleRemoveProduct = (productId: string) => {
     removeProductFromShelf(productId, item.id);
   };
