@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Checkout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="checkout-container">
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="step active">1. Shipping & Gift Options</div>
+            <div class="step">2. Savings & Payment</div>
+            <div class="step">3. Order Review</div>
+        </div>
+
+        <!-- Checkout Form -->
+        <div class="checkout-form">
+            <h2>Delivery Address</h2>
+            <form id="checkoutForm">
+                <div class="input-group">
+                    <input type="text" id="firstName" placeholder="First Name" required>
+                    <input type="text" id="lastName" placeholder="Last Name" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="address" placeholder="Full Address" required>
+                    <input type="text" id="state" placeholder="State" required>
+                    <input type="text" id="city" placeholder="City" required>
+                    
+                    <input type="text" id="zipCode" placeholder="Zip Code" required>
+                    
+                </div>
+                <input type="tel" id="phone" placeholder="Phone for Delivery Contact" required>
+
+                <label class="gift-label">
+                    <input type="checkbox" id="gift-checkbox">
+                    🎁 Order includes a gift
+                </label>
+                
+            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h2>Order Summary</h2>
+            <div class="summary-item">Dish 1: <span>₹250</span></div>
+            <div class="summary-item">Dish 2: <span>₹180</span></div>
+            <div class="summary-item">Offer Discount: <span>- ₹50</span></div>
+            <div class="summary-item">Shipping: <span>₹30</span></div>
+            <hr>
+            <div class="summary-total">Total: <span id="totalPrice">₹410</span></div>
+        </div>
+
+        <!-- Checkout Buttons -->
+        <div class="checkout-buttons">
+            <button id="cancelOrder">Cancel Order</button>
+            <button id="proceedToPayment">Proceed to Payment</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

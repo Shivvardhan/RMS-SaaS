@@ -1,0 +1,52 @@
+/* General Styles */
+body {
+    background-color: #3E97FF;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container */
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 50%;
+    text-align: center;
+    color: black;
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 50%;
+    height: 10px;
+    background: #3E97FF;
+    border-radius: 5px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: #3E97FF;
+    transition: width 1s linear;
+}
+
+/* Order status text */
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 18px;
+    font-weight: bold;
+}
