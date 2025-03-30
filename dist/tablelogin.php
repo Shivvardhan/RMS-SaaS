@@ -4,6 +4,24 @@
 session_start();
 require_once('dbcon.php');
 
+if (isset($_GET['token'])) {
+    $l_token = $_GET['token'];
+    // Check if token exists and is valid
+    $sql = "SELECT * FROM t_users WHERE l_token = '$l_token' LIMIT 1";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+
+        // Set session to log in the user
+        $_SESSION['uid'] = $row['ruserid'];
+        header('Location: dash_t.php'); // Redirect to your dashboard or home page
+        exit;
+    } else {
+        echo "Invalid or expired token!";
+    }
+} else {
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$username = $_POST['username'];
 	$password = $_POST['password'];
@@ -45,6 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$error = 'Invalid username or password';
 	}
 }
+}
+
 ?>
 <html lang="en">
 <!--begin::Head-->
