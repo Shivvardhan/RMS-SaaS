@@ -61,3 +61,35 @@ PHPQRCode for QR Generation
 
 PHPMailer for Email Notifications
 
+**Glimpses of System Vista!!**
+
+![image](https://github.com/user-attachments/assets/39e5567d-ea75-4bef-a525-3702db282653)
+
+![image](https://github.com/user-attachments/assets/11a63cc1-64cc-47f3-a9ac-1e1eaa142d11)
+
+
+![WhatsApp Image 2025-03-30 at 07 22 48_3e6fea1b](https://github.com/user-attachments/assets/f275639b-b60f-4ac4-965f-df68ea821069)
+
+🤝 Contribution Guidelines
+We welcome contributions from the community! If you would like to contribute:
+
+Fork the repository.
+
+Create a new branch: git checkout -b feature-name.
+
+Commit your changes: git commit -m "Add a new feature".
+
+Push to your branch: git push origin feature-name.
+
+Submit a pull request.
+
+📧 Support
+For any issues or queries, feel free to raise an issue on GitHub or contact me directly at:
+📩 shivvardhan@example.com
+
+📜 License
+This project is licensed under the MIT License – see the LICENSE file for details.
+
+🌟 Show Your Support
+If you found this project useful, don’t forget to star this repo and contribute to its growth! 😊
+
