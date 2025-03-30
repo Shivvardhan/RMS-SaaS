@@ -5,8 +5,9 @@ $stmt->bind_param('s', $_SESSION['username']);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-if ($user['l_token'] == isset($_SESSION['token']) && isset($_SESSION['username']) && session_status() === PHP_SESSION_ACTIVE) {
-    require "menu_t.php"; ?>
+    if (isset($_SESSION['token']) && ($user['l_token'] == $_SESSION['token'])) {
+            require "menu_t.php";
+    ?>
 
 
 <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
@@ -607,5 +608,5 @@ function decreaseCount(a, b, c) {
 <?php require "footer_t.php";
 } else {
     echo "<script>window.location.href = 'index.php'; </script>";
-}
+} 
 ?>

@@ -176,7 +176,9 @@ if ($user['l_token'] == isset($_SESSION['token']) && isset($_SESSION['username']
                 <div class="card-body" style="text-align:center">
                     <h5 class="card-title"><?php echo $row["username"] ?></h5>
                     <h6 class="card-subtitle mb-2 text-muted"><?php echo $row["capacity"] ?> seats</h6>
-                    <a href="#" class="btn btn-success hover-elevate-up">Generate QR</a>
+                    <a href="#" class="btn btn-success hover-elevate-up"
+                        onclick="generateQR(<?php echo $row['tid']; ?>)">Generate
+                        QR</a>
                 </div>
             </div>
         </div>
@@ -195,59 +197,102 @@ if ($user['l_token'] == isset($_SESSION['token']) && isset($_SESSION['username']
         };
         ?>
 
-
-    <div class="modal fade" tabindex="-1" id="kt_modal_stacked_1">
-        <div class="modal-dialog modal-dialog-centered" style="max-width:700px;">
-            <div class="modal-content">
+    <!-- Modal for QR Code -->
+    <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg">
                 <div class="modal-header">
-                    <h3 class="modal-title">Create New Table</h3>
-
-                    <!--begin::Close-->
-                    <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <i class="fa fa-times fs-1"><i class="path1"></i><i class="path2"></i></i>
-                    </div>
-                    <!--end::Close-->
+                    <h5 class="modal-title" id="qrModalLabel">Scan QR to Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <div class="modal-body text-center">
+                    <img id="qrImage" src="" alt="QR Code" class="img-fluid border rounded" />
+                    <div class="mt-3">
+                        <button id="downloadBtn" class="btn btn-success me-2" onclick="downloadQR()">Download
+                            QR</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                <form method="POST" action="#">
+        <script>
+        function generateQR(tid, username, password) {
+            $.ajax({
+                url: 'generate_qr.php',
+                method: 'POST',
+                data: {
+                    tid: tid
+                },
+                success: function(data) {
+                    $('#qrImage').attr('src', 'qrcode_' + tid + '.png');
+                    var qrModal = new bootstrap.Modal(document.getElementById('qrModal'));
+                    qrModal.show();
+                }
+            });
+        }
 
-                    <div class="modal-body">
+        function downloadQR() {
+            const qrImageSrc = $('#qrImage').attr('src');
+            const link = document.createElement('a');
+            link.href = qrImageSrc;
+            link.download = qrImageSrc.split('/').pop();
+            link.click();
+        }
+        </script>
 
-                        <!--begin::Input group-->
-                        <div class="form-floating mb-7">
-                            <input type="text" class="form-control" id="username" name="username"
-                                placeholder="Enter UserName" />
-                            <label for="username">UserName</label>
+        <div class="modal fade" tabindex="-1" id="kt_modal_stacked_1">
+            <div class="modal-dialog modal-dialog-centered" style="max-width:700px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Create New Table</h3>
+
+                        <!--begin::Close-->
+                        <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <i class="fa fa-times fs-1"><i class="path1"></i><i class="path2"></i></i>
                         </div>
-                        <!--end::Input group-->
+                        <!--end::Close-->
+                    </div>
 
-                        <!--begin::Input group-->
-                        <div class="form-floating mb-7">
-                            <input type="text" class="form-control" id="password" name="password"
-                                placeholder="Enter Password" />
-                            <label for="password">Password</label>
-                        </div>
-                        <!--end::Input group-->
+                    <form method="POST" action="#">
 
-                        <!--begin::Input group-->
-                        <div class="form-floating mb-7">
-                            <input type="number" min="1" max="10" class="form-control" name="capacity" id="capacity"
-                                placeholder="Enter Seat's Capacity" />
-                            <label for="capacity">Seat Capacity</label>
-                        </div>
-                        <!--end::Input group-->
+                        <div class="modal-body">
 
-                        <!--begin::Input group-->
-                        <div class="form-floating">
-                            <?php if ($_SESSION['usertype'] == 'admin') { ?>
+                            <!--begin::Input group-->
+                            <div class="form-floating mb-7">
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Enter UserName" />
+                                <label for="username">UserName</label>
+                            </div>
+                            <!--end::Input group-->
 
-                            <select name="uid" class="form-select" data-control="select2"
-                                data-placeholder="Select an option">
-                                <option></option>
+                            <!--begin::Input group-->
+                            <div class="form-floating mb-7">
+                                <input type="text" class="form-control" id="password" name="password"
+                                    placeholder="Enter Password" />
+                                <label for="password">Password</label>
+                            </div>
+                            <!--end::Input group-->
+
+                            <!--begin::Input group-->
+                            <div class="form-floating mb-7">
+                                <input type="number" min="1" max="10" class="form-control" name="capacity" id="capacity"
+                                    placeholder="Enter Seat's Capacity" />
+                                <label for="capacity">Seat Capacity</label>
+                            </div>
+                            <!--end::Input group-->
+
+                            <!--begin::Input group-->
+                            <div class="form-floating">
+                                <?php if ($_SESSION['usertype'] == 'admin') { ?>
+
+                                <select name="uid" class="form-select" data-control="select2"
+                                    data-placeholder="Select an option">
+                                    <option></option>
 
 
-                                <?php
+                                    <?php
                                         $sql = "SELECT uid,username,r_name FROM `users` WHERE usertype='radmin';";
                                         $result = $conn->query($sql);
 
@@ -256,32 +301,32 @@ if ($user['l_token'] == isset($_SESSION['token']) && isset($_SESSION['username']
                                             while ($row = $result->fetch_assoc()) {
 
                                         ?>
-                                <option value="<?php echo $row['uid']; ?>">
-                                    <?php echo $row['r_name'] .  " (" . $row['username'] . ")"; ?>
-                                </option>
-                                <?php
+                                    <option value="<?php echo $row['uid']; ?>">
+                                        <?php echo $row['r_name'] .  " (" . $row['username'] . ")"; ?>
+                                    </option>
+                                    <?php
                                             }
                                         }
 
 
                                         ?>
-                            </select>
-                            <?php } else { ?>
-                            <input type="hidden" class="form-control" id="username" name="uid"
-                                value="<?php echo $_SESSION['uid']; ?>" />
-                            <?php } ?>
+                                </select>
+                                <?php } else { ?>
+                                <input type="hidden" class="form-control" id="username" name="uid"
+                                    value="<?php echo $_SESSION['uid']; ?>" />
+                                <?php } ?>
+                            </div>
+                            <!--end::Input group-->
+
                         </div>
-                        <!--end::Input group-->
 
-                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="submit" name="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="submit" name="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-
-                <?php
+                    <?php
 
 if (isset($_POST["submit"])) {
     // Sanitize input to prevent SQL injection
@@ -303,20 +348,20 @@ if (isset($_POST["submit"])) {
 
     if ($conn->query($sql) === TRUE) {
         ?>
-                <script>
-                Swal.fire({
-                    text: "Your Table has been added successfully!",
-                    icon: "success",
-                    buttonsStyling: false,
-                    confirmButtonText: "Ok, got it!",
-                    customClass: {
-                        confirmButton: "btn btn-primary"
-                    }
-                }).then(function() {
-                    window.location = "r_table.php";
-                });
-                </script>
-                <?php
+                    <script>
+                    Swal.fire({
+                        text: "Your Table has been added successfully!",
+                        icon: "success",
+                        buttonsStyling: false,
+                        confirmButtonText: "Ok, got it!",
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        }
+                    }).then(function() {
+                        window.location = "r_table.php";
+                    });
+                    </script>
+                    <?php
                     } else {
                         // Log error and display user-friendly message
                         error_log("Error: " . $sql . " - " . $conn->error);
@@ -325,82 +370,83 @@ if (isset($_POST["submit"])) {
                 }
                 ?>
 
+                </div>
             </div>
         </div>
+
+
+
+
+
     </div>
 
+    <!--end::Content wrapper-->
 
 
 
 
-</div>
+    <script>
+    var elements = Array.prototype.slice.call(document.querySelectorAll("[data-bs-stacked-modal]"));
 
-<!--end::Content wrapper-->
-
-
-
-<script>
-var elements = Array.prototype.slice.call(document.querySelectorAll("[data-bs-stacked-modal]"));
-
-if (elements && elements.length > 0) {
-    elements.forEach((element) => {
-        if (element.getAttribute("data-kt-initialized") === "1") {
-            return;
-        }
-
-        element.setAttribute("data-kt-initialized", "1");
-
-        element.addEventListener("click", function(e) {
-            e.preventDefault();
-
-            const modalEl = document.querySelector(this.getAttribute("data-bs-stacked-modal"));
-
-            if (modalEl) {
-                const modal = new bootstrap.Modal(modalEl);
-                modal.show();
+    if (elements && elements.length > 0) {
+        elements.forEach((element) => {
+            if (element.getAttribute("data-kt-initialized") === "1") {
+                return;
             }
+
+            element.setAttribute("data-kt-initialized", "1");
+
+            element.addEventListener("click", function(e) {
+                e.preventDefault();
+
+                const modalEl = document.querySelector(this.getAttribute("data-bs-stacked-modal"));
+
+                if (modalEl) {
+                    const modal = new bootstrap.Modal(modalEl);
+                    modal.show();
+                }
+            });
         });
-    });
-}
-</script>
+    }
+    </script>
 
-<style>
-.column {
-    float: left;
-    width: 33.33%;
-    margin-bottom: 40px;
-}
-
-.card:hover {
-    transform: none !important;
-    scale: 1 !important;
-    box-shadow: none !important;
-}
-
-/* Clear floats after the columns */
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-.card:hover {
-    scale: 1.05;
-    transition: 0.3s ease-out;
-}
-
-@media screen and (max-width: 600px) {
+    <style>
     .column {
-        width: 100%;
-        justify-content: center;
+        float: left;
+        width: 33.33%;
         margin-bottom: 40px;
     }
 
-}
-</style>
+    .card:hover {
+        transform: none !important;
+        scale: 1 !important;
+        box-shadow: none !important;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    .card:hover {
+        scale: 1.05;
+        transition: 0.3s ease-out;
+    }
+
+    @media screen and (max-width: 600px) {
+        .column {
+            width: 100%;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+    }
+    </style>
 
 
-<?php require "footer.php";
+    <?php require "footer.php";
 } else {
     echo "<script>window.location.href = 'index.php'; </script>";
 }
